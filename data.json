@@ -1,0 +1,119 @@
+{
+  "_comment": "كل حقل نصي له نسخة عربية ونسخة إنجليزية بنفس الاسم + لاحقة _en. إن غابت _en تُستخدم العربية. عدّل مباشرة أو عبر لوحة التحكم (التعديلات تُحفظ في localStorage وتتجاوز هذا الملف).",
+
+  "restaurant": {
+    "id": "restaurant", "kind": "مطعم", "kind_en": "Restaurant",
+    "name": "مطعم الذواقة", "name_en": "Al-Thawaqa Restaurant",
+    "tagline": "نكهات أصيلة تُحاكي ذاكرة المكان", "tagline_en": "Authentic flavors that echo memory",
+    "logoText": "الذواقة", "logoText_en": "Thawaqa",
+    "about": "نقدّم أشهى الأطباق الشرقية والمشاوي الطازجة، محضّرة يومياً بأجود المكوّنات.",
+    "about_en": "We serve the finest oriental dishes and fresh grills, prepared daily with premium ingredients.",
+    "phone": "966500000001",
+    "address": "حي العليا، طريق الملك فهد، الرياض", "address_en": "Al Olaya, King Fahd Road, Riyadh",
+    "mapQuery": "King Fahd Road Riyadh Saudi Arabia",
+    "colors": { "primary": "#B23A2E", "accent": "#E2A53D", "bg": "#FBF6EE", "text": "#2B2118" },
+    "hours": [
+      { "day": "السبت – الخميس", "day_en": "Sat – Thu", "time": "12:00 ظهراً – 1:00 صباحاً", "time_en": "12:00 PM – 1:00 AM" },
+      { "day": "الجمعة", "day_en": "Friday", "time": "1:00 ظهراً – 2:00 صباحاً", "time_en": "1:00 PM – 2:00 AM" }
+    ],
+    "social": { "facebook": "https://facebook.com", "instagram": "https://instagram.com", "tiktok": "https://tiktok.com" },
+    "formspree": "https://formspree.io/f/your_form_id",
+    "dishes": [
+      { "name": "مندي لحم", "name_en": "Lamb Mandi", "desc": "أرز بسمتي مدخّن مع لحم غنم طري", "desc_en": "Smoked basmati rice with tender lamb", "price": 65, "img": "https://placehold.co/600x400/B23A2E/FBF6EE?text=Mandi", "season": "all", "tag": "الأكثر طلباً", "tag_en": "Best Seller" },
+      { "name": "مشاوي مشكّلة", "name_en": "Mixed Grill", "desc": "تشكيلة من الكباب والشيش طاووق", "desc_en": "A selection of kebab and shish tawook", "price": 80, "img": "https://placehold.co/600x400/E2A53D/2B2118?text=Grill", "season": "all", "tag": "", "tag_en": "" },
+      { "name": "سلطة فتوش", "name_en": "Fattoush Salad", "desc": "خضار طازجة مع خبز محمّص ودبس الرمان", "desc_en": "Fresh veggies with toasted bread and pomegranate molasses", "price": 22, "img": "https://placehold.co/600x400/4F7942/FBF6EE?text=Salad", "season": "summer", "tag": "صيفي", "tag_en": "Summer" },
+      { "name": "شوربة عدس", "name_en": "Lentil Soup", "desc": "شوربة عدس دافئة بنكهة الكمّون", "desc_en": "Warm lentil soup with cumin", "price": 18, "img": "https://placehold.co/600x400/A0522D/FBF6EE?text=Soup", "season": "winter", "tag": "شتوي", "tag_en": "Winter" },
+      { "name": "كبسة دجاج", "name_en": "Chicken Kabsa", "desc": "أرز متبّل مع دجاج بلدي مشوي", "desc_en": "Spiced rice with grilled free-range chicken", "price": 45, "img": "https://placehold.co/600x400/8B4513/FBF6EE?text=Kabsa", "season": "all", "tag": "", "tag_en": "" },
+      { "name": "أم علي", "name_en": "Om Ali", "desc": "حلى شرقي ساخن بالمكسّرات والقشطة", "desc_en": "Warm oriental dessert with nuts and cream", "price": 25, "img": "https://placehold.co/600x400/C0392B/FBF6EE?text=Dessert", "season": "winter", "tag": "حلى", "tag_en": "Dessert" }
+    ],
+    "gallery": [
+      { "img": "https://placehold.co/800x600/B23A2E/FBF6EE?text=Interior", "caption": "صالة الطعام", "caption_en": "Dining hall" },
+      { "img": "https://placehold.co/800x600/E2A53D/2B2118?text=Chef", "caption": "مطبخنا", "caption_en": "Our kitchen" },
+      { "img": "https://placehold.co/800x600/8B4513/FBF6EE?text=Table", "caption": "طاولة جاهزة", "caption_en": "Set table" },
+      { "img": "https://placehold.co/800x600/4F7942/FBF6EE?text=Garden", "caption": "الجلسة الخارجية", "caption_en": "Outdoor seating" },
+      { "img": "https://placehold.co/800x600/C0392B/FBF6EE?text=Dessert", "caption": "ركن الحلويات", "caption_en": "Dessert corner" }
+    ],
+    "reviews": [
+      { "name": "سعود ع.", "stars": 5, "text": "أفضل مندي جربته بحياتي، الطعم ولا أروع.", "text_en": "Best mandi I've ever had, incredible taste." },
+      { "name": "نورة م.", "stars": 5, "text": "أجواء راقية وأطباق نظيفة، صرت زبونة دائمة.", "text_en": "Elegant ambiance and clean dishes, I'm a regular now." },
+      { "name": "خالد ف.", "stars": 4, "text": "المشاوي ممتازة، بس الانتظار شوي طويل بأوقات الذروة.", "text_en": "Great grills, but the wait is a bit long at peak times." }
+    ]
+  },
+
+  "cafe": {
+    "id": "cafe", "kind": "كافيه", "kind_en": "Cafe",
+    "name": "كافيه نَفَس", "name_en": "Nafas Cafe",
+    "tagline": "رشفة قهوة تُعيد توازن يومك", "tagline_en": "A sip of coffee to balance your day",
+    "logoText": "نَفَس", "logoText_en": "Nafas",
+    "about": "محمصة قهوة مختصة تقدّم أجود أنواع البن المحمّص يومياً مع حلويات منزلية.",
+    "about_en": "A specialty coffee roastery serving the finest freshly roasted beans daily with homemade pastries.",
+    "phone": "966500000002",
+    "address": "حي الياسمين، الرياض", "address_en": "Al Yasmin, Riyadh",
+    "mapQuery": "Al Yasmin Riyadh Saudi Arabia",
+    "colors": { "primary": "#6F4E37", "accent": "#C89F6D", "bg": "#F6F0E8", "text": "#3A2C20" },
+    "hours": [
+      { "day": "كل أيام الأسبوع", "day_en": "Every day", "time": "7:00 صباحاً – 12:00 منتصف الليل", "time_en": "7:00 AM – 12:00 AM" }
+    ],
+    "social": { "facebook": "https://facebook.com", "instagram": "https://instagram.com", "tiktok": "https://tiktok.com" },
+    "formspree": "https://formspree.io/f/your_form_id",
+    "dishes": [
+      { "name": "إسبريسو مزدوج", "name_en": "Double Espresso", "desc": "بن مختص بنكهة الشوكولاتة الداكنة", "desc_en": "Specialty beans with dark chocolate notes", "price": 14, "img": "https://placehold.co/600x400/6F4E37/F6F0E8?text=Espresso", "season": "all", "tag": "الأكثر طلباً", "tag_en": "Best Seller" },
+      { "name": "آيس لاتيه", "name_en": "Iced Latte", "desc": "حليب بارد مع إسبريسو ومكعبات ثلج", "desc_en": "Cold milk with espresso over ice", "price": 18, "img": "https://placehold.co/600x400/C89F6D/3A2C20?text=Iced+Latte", "season": "summer", "tag": "صيفي", "tag_en": "Summer" },
+      { "name": "هوت شوكليت", "name_en": "Hot Chocolate", "desc": "شوكولاتة بلجيكية ساخنة بالكريمة", "desc_en": "Hot Belgian chocolate with cream", "price": 20, "img": "https://placehold.co/600x400/4B2E1E/F6F0E8?text=Hot+Choc", "season": "winter", "tag": "شتوي", "tag_en": "Winter" },
+      { "name": "في60", "name_en": "V60", "desc": "تقطير يدوي يُبرز نكهات البن الفاكهية", "desc_en": "Pour-over highlighting fruity bean notes", "price": 22, "img": "https://placehold.co/600x400/8A6240/F6F0E8?text=V60", "season": "all", "tag": "", "tag_en": "" },
+      { "name": "تشيز كيك", "name_en": "Cheesecake", "desc": "قطعة تشيز كيك بصلصة التوت", "desc_en": "Cheesecake slice with berry sauce", "price": 24, "img": "https://placehold.co/600x400/D9B382/3A2C20?text=Cheesecake", "season": "all", "tag": "حلى", "tag_en": "Dessert" },
+      { "name": "ماتشا لاتيه", "name_en": "Matcha Latte", "desc": "شاي ماتشا ياباني مع حليب مخفوق", "desc_en": "Japanese matcha with steamed milk", "price": 21, "img": "https://placehold.co/600x400/7BA05B/F6F0E8?text=Matcha", "season": "summer", "tag": "صيفي", "tag_en": "Summer" }
+    ],
+    "gallery": [
+      { "img": "https://placehold.co/800x600/6F4E37/F6F0E8?text=Bar", "caption": "ركن الباريستا", "caption_en": "Barista bar" },
+      { "img": "https://placehold.co/800x600/C89F6D/3A2C20?text=Seating", "caption": "جلسات هادئة", "caption_en": "Cozy seating" },
+      { "img": "https://placehold.co/800x600/4B2E1E/F6F0E8?text=Beans", "caption": "بن مختص", "caption_en": "Specialty beans" },
+      { "img": "https://placehold.co/800x600/8A6240/F6F0E8?text=Latte+Art", "caption": "فن اللاتيه", "caption_en": "Latte art" },
+      { "img": "https://placehold.co/800x600/D9B382/3A2C20?text=Pastries", "caption": "ركن الحلويات", "caption_en": "Pastry corner" }
+    ],
+    "reviews": [
+      { "name": "ريم ص.", "stars": 5, "text": "أحلى مكان أشتغل منه، القهوة ممتازة.", "text_en": "Best place to work from, excellent coffee." },
+      { "name": "فيصل د.", "stars": 5, "text": "الـ V60 عندهم مستوى آخر.", "text_en": "Their V60 is next level." },
+      { "name": "لمى ك.", "stars": 4, "text": "التشيز كيك خيالي، أتمنى خيارات حلى أكثر.", "text_en": "The cheesecake is amazing, wish for more dessert options." }
+    ]
+  },
+
+  "bakery": {
+    "id": "bakery", "kind": "مخبز", "kind_en": "Bakery",
+    "name": "مخبز سنابل", "name_en": "Sanabel Bakery",
+    "tagline": "خبز طازج يخرج من الفرن كل ساعة", "tagline_en": "Fresh bread out of the oven every hour",
+    "logoText": "سنابل", "logoText_en": "Sanabel",
+    "about": "مخبز حِرفي نعجن ونخبز يومياً باستخدام عجينة الخميرة الطبيعية ومعجّنات فرنسية طازجة.",
+    "about_en": "An artisan bakery kneading and baking daily with natural sourdough and fresh French pastries.",
+    "phone": "966500000003",
+    "address": "حي النرجس، الرياض", "address_en": "Al Narjis, Riyadh",
+    "mapQuery": "Al Narjis Riyadh Saudi Arabia",
+    "colors": { "primary": "#B97A3A", "accent": "#E6C229", "bg": "#FBF3E4", "text": "#43321A" },
+    "hours": [
+      { "day": "السبت – الخميس", "day_en": "Sat – Thu", "time": "6:00 صباحاً – 11:00 مساءً", "time_en": "6:00 AM – 11:00 PM" },
+      { "day": "الجمعة", "day_en": "Friday", "time": "2:00 ظهراً – 11:00 مساءً", "time_en": "2:00 PM – 11:00 PM" }
+    ],
+    "social": { "facebook": "https://facebook.com", "instagram": "https://instagram.com", "tiktok": "https://tiktok.com" },
+    "formspree": "https://formspree.io/f/your_form_id",
+    "dishes": [
+      { "name": "كرواسون بالزبدة", "name_en": "Butter Croissant", "desc": "طبقات ذهبية هشّة بزبدة فرنسية", "desc_en": "Flaky golden layers with French butter", "price": 12, "img": "https://placehold.co/600x400/B97A3A/FBF3E4?text=Croissant", "season": "all", "tag": "الأكثر طلباً", "tag_en": "Best Seller" },
+      { "name": "خبز ساوردو", "name_en": "Sourdough", "desc": "رغيف بعجينة الخميرة الطبيعية", "desc_en": "Loaf made with natural sourdough", "price": 18, "img": "https://placehold.co/600x400/D2A24C/43321A?text=Sourdough", "season": "all", "tag": "", "tag_en": "" },
+      { "name": "فطيرة تفاح", "name_en": "Apple Pie", "desc": "تفاح بالقرفة على عجينة مقرمشة", "desc_en": "Cinnamon apple on crispy dough", "price": 16, "img": "https://placehold.co/600x400/A0522D/FBF3E4?text=Apple+Pie", "season": "winter", "tag": "شتوي", "tag_en": "Winter" },
+      { "name": "دونات ليمون", "name_en": "Lemon Donut", "desc": "دونات منعشة بكريمة الليمون", "desc_en": "Refreshing donut with lemon cream", "price": 10, "img": "https://placehold.co/600x400/E6C229/43321A?text=Donut", "season": "summer", "tag": "صيفي", "tag_en": "Summer" },
+      { "name": "بان أو شوكولا", "name_en": "Pain au Chocolat", "desc": "معجّنات محشوة بالشوكولاتة الداكنة", "desc_en": "Pastry filled with dark chocolate", "price": 14, "img": "https://placehold.co/600x400/6B4423/FBF3E4?text=Pain", "season": "all", "tag": "", "tag_en": "" },
+      { "name": "تشيز رول", "name_en": "Cheese Roll", "desc": "لفائف الجبن المالحة الطازجة", "desc_en": "Fresh savory cheese rolls", "price": 13, "img": "https://placehold.co/600x400/C8923C/FBF3E4?text=Cheese+Roll", "season": "all", "tag": "", "tag_en": "" }
+    ],
+    "gallery": [
+      { "img": "https://placehold.co/800x600/B97A3A/FBF3E4?text=Oven", "caption": "الفرن الحجري", "caption_en": "Stone oven" },
+      { "img": "https://placehold.co/800x600/D2A24C/43321A?text=Display", "caption": "واجهة المعجّنات", "caption_en": "Pastry display" },
+      { "img": "https://placehold.co/800x600/6B4423/FBF3E4?text=Dough", "caption": "تحضير العجين", "caption_en": "Dough prep" },
+      { "img": "https://placehold.co/800x600/E6C229/43321A?text=Bread", "caption": "خبز طازج", "caption_en": "Fresh bread" },
+      { "img": "https://placehold.co/800x600/C8923C/FBF3E4?text=Counter", "caption": "ركن البيع", "caption_en": "Counter" }
+    ],
+    "reviews": [
+      { "name": "عبدالله ت.", "stars": 5, "text": "ريحة الخبز الطازج تجذبك من برّا.", "text_en": "The smell of fresh bread pulls you in from outside." },
+      { "name": "مها ز.", "stars": 5, "text": "الساوردو عندهم الأفضل بالمدينة.", "text_en": "Their sourdough is the best in town." },
+      { "name": "تركي ب.", "stars": 4, "text": "جودة ممتازة، أتمنى يفتحون فرع ثاني.", "text_en": "Excellent quality, wish they'd open a second branch." }
+    ]
+  }
+}

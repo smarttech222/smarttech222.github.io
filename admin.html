@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<!--
+  =========================================================
+  admin.html — لوحة تحكم العميل (مستقلة)
+  - دخول بكلمة سر
+  - تعديل: الاسم، النصوص، الألوان، الأطباق، الساعات، الآراء، التواصل
+  - الحفظ في localStorage (لكل نوع على حدة)
+  ملاحظة أمنية: كلمة السر هنا للعرض فقط (تحقق من جهة العميل).
+  للحماية الحقيقية يلزم خادم/قاعدة بيانات.
+  =========================================================
+-->
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* ----- تنسيقات خاصة بلوحة التحكم ----- */
+    :root { --p:#B23A2E; --a:#E2A53D; --bg:#f3f4f6; --card:#fff; --line:#e2e2e2; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#222; line-height:1.7; }
+    h1,h2,h3 { font-family:'Cairo',sans-serif; }
+    .wrap { max-width: 900px; margin-inline:auto; padding: 1.5rem; }
+
+    /* شاشة الدخول */
+    .login-screen {
+      min-height:100vh; display:grid; place-items:center;
+      background: linear-gradient(135deg,var(--p),#000);
+    }
+    .login-box {
+      background:#fff; padding:2.5rem; border-radius:18px; width:min(90%,380px);
+      box-shadow:0 20px 60px rgba(0,0,0,.3); text-align:center;
+    }
+    .login-box h1 { color:var(--p); margin-bottom:.4rem; }
+    .login-box p { color:#888; margin-bottom:1.5rem; }
+    .login-box input {
+      width:100%; padding:.9rem 1.1rem; font-family:'Tajawal'; font-size:1rem;
+      border:1.5px solid var(--line); border-radius:12px; margin-bottom:1rem; text-align:center;
+    }
+    .login-box input:focus { outline:none; border-color:var(--p); }
+    .login-err { color:#c62828; font-size:.9rem; min-height:1.2rem; margin-bottom:.5rem; }
+
+    /* الأزرار */
+    .btn { display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.4rem; border:none;
+      border-radius:10px; font-family:'Tajawal'; font-weight:700; font-size:1rem; cursor:pointer; transition:.2s; }
+    .btn-p { background:var(--p); color:#fff; }
+    .btn-p:hover { filter:brightness(1.08); }
+    .btn-o { background:transparent; color:var(--p); border:1.5px solid var(--p); }
+    .btn-o:hover { background:var(--p); color:#fff; }
+    .btn-sm { padding:.45rem .8rem; font-size:.85rem; }
+    .btn-danger { background:#fde8e8; color:#c62828; }
+    .btn-danger:hover { background:#c62828; color:#fff; }
+
+    /* الهيدر */
+    .admin-head {
+      background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10;
+      display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .admin-head h1 { font-size:1.3rem; color:var(--p); display:flex; align-items:center; gap:.5rem; }
+    .head-actions { display:flex; gap:.6rem; flex-wrap:wrap; }
+
+    /* اختيار النوع */
+    .type-tabs { display:flex; gap:.5rem; margin:1.5rem 0; flex-wrap:wrap; }
+    .type-tab { padding:.6rem 1.2rem; border:1.5px solid var(--line); background:#fff; border-radius:10px;
+      cursor:pointer; font-family:'Tajawal'; font-weight:700; transition:.2s; }
+    .type-tab.active { background:var(--p); color:#fff; border-color:var(--p); }
+
+    /* البطاقات والحقول */
+    .card { background:var(--card); border-radius:14px; padding:1.5rem; margin-bottom:1.2rem; box-shadow:0 4px 14px rgba(0,0,0,.05); }
+    .card h2 { font-size:1.15rem; margin-bottom:1rem; color:#333; display:flex; align-items:center; gap:.5rem; border-bottom:1px solid var(--line); padding-bottom:.7rem; }
+    .field { margin-bottom:1rem; }
+    .field label { display:block; font-weight:700; margin-bottom:.35rem; font-size:.92rem; }
+    .field input, .field textarea, .field select {
+      width:100%; padding:.7rem .9rem; font-family:'Tajawal'; font-size:.95rem;
+      border:1.5px solid var(--line); border-radius:10px; background:#fafafa;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--p); background:#fff; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    input[type="color"] { height:46px; padding:4px; cursor:pointer; }
+
+    /* صفوف ديناميكية (أطباق/ساعات/آراء) */
+    .row-item { border:1px dashed var(--line); border-radius:12px; padding:1rem; margin-bottom:.9rem; position:relative; background:#fafafa; }
+    .row-item .remove { position:absolute; top:.6rem; left:.6rem; }
+
+    .hint { background:#fff8e6; border-right:4px solid var(--a); padding:.8rem 1rem; border-radius:8px; font-size:.9rem; margin-bottom:1.2rem; }
+    .toast {
+      position:fixed; bottom:24px; right:24px; background:#2e7d32; color:#fff;
+      padding:1rem 1.5rem; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+      transform:translateY(150%); transition:transform .4s ease; z-index:100; font-weight:700;
+    }
+    .toast.show { transform:translateY(0); }
+
+    @media (max-width:600px){ .grid-2,.grid-4 { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- ============ شاشة الدخول ============ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h1><i class="fa-solid fa-lock"></i> لوحة التحكم</h1>
+      <p>أدخل كلمة المرور للمتابعة</p>
+      <input type="password" id="pwInput" placeholder="كلمة المرور" />
+      <div class="login-err" id="loginErr"></div>
+      <button class="btn btn-p" style="width:100%; justify-content:center;" id="loginBtn">دخول</button>
+    </div>
+  </div>
+
+  <!-- ============ لوحة التحكم (مخفية حتى الدخول) ============ -->
+  <div id="dashboard" style="display:none;">
+    <div class="admin-head">
+      <h1><i class="fa-solid fa-gear"></i> لوحة التحكم</h1>
+      <div class="head-actions">
+        <a href="index.html" target="_blank" class="btn btn-o"><i class="fa-solid fa-eye"></i> معاينة الصفحة</a>
+        <button class="btn btn-danger btn-sm" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> استعادة الافتراضي</button>
+        <button class="btn btn-p" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="hint">
+        <i class="fa-solid fa-circle-info"></i>
+        اختر النوع الذي تريد تعديله، عدّل الحقول، ثم اضغط <b>حفظ التعديلات</b>. التعديلات تُحفظ في متصفحك (localStorage).
+      </div>
+
+      <!-- اختيار النوع -->
+      <div class="type-tabs" id="typeTabs">
+        <button class="type-tab active" data-type="restaurant">🍽️ مطعم</button>
+        <button class="type-tab" data-type="cafe">☕ كافيه</button>
+        <button class="type-tab" data-type="bakery">🥐 مخبز</button>
+      </div>
+
+      <!-- معلومات عامة -->
+      <div class="card">
+        <h2><i class="fa-solid fa-store"></i> معلومات عامة</h2>
+        <div class="grid-2">
+          <div class="field"><label>اسم النشاط (عربي)</label><input id="f_name" /></div>
+          <div class="field"><label>اسم النشاط (English)</label><input id="f_name_en" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>نص الشعار (عربي)</label><input id="f_logoText" /></div>
+          <div class="field"><label>نص الشعار (English)</label><input id="f_logoText_en" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>الشعار التعريفي (عربي)</label><input id="f_tagline" /></div>
+          <div class="field"><label>الشعار التعريفي (English)</label><input id="f_tagline_en" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>نبذة (عربي)</label><textarea id="f_about" rows="2"></textarea></div>
+          <div class="field"><label>نبذة (English)</label><textarea id="f_about_en" rows="2"></textarea></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>رقم واتساب (دولي بدون +)</label><input id="f_phone" placeholder="966500000000" /></div>
+          <div class="field"><label>رابط Formspree</label><input id="f_formspree" placeholder="https://formspree.io/f/xxxx" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>العنوان (عربي)</label><input id="f_address" /></div>
+          <div class="field"><label>العنوان (English)</label><input id="f_address_en" /></div>
+        </div>
+        <div class="field"><label>موقع الخريطة (نص بحث Google Maps)</label><input id="f_mapQuery" placeholder="مثال: King Fahd Road Riyadh" /></div>
+      </div>
+
+      <!-- الألوان -->
+      <div class="card">
+        <h2><i class="fa-solid fa-palette"></i> الألوان</h2>
+        <div class="grid-4">
+          <div class="field"><label>الأساسي</label><input type="color" id="f_primary" /></div>
+          <div class="field"><label>التمييز</label><input type="color" id="f_accent" /></div>
+          <div class="field"><label>الخلفية</label><input type="color" id="f_bg" /></div>
+          <div class="field"><label>النص</label><input type="color" id="f_text" /></div>
+        </div>
+      </div>
+
+      <!-- روابط التواصل -->
+      <div class="card">
+        <h2><i class="fa-solid fa-share-nodes"></i> روابط التواصل</h2>
+        <div class="grid-2">
+          <div class="field"><label><i class="fa-brands fa-facebook"></i> فيسبوك</label><input id="f_facebook" /></div>
+          <div class="field"><label><i class="fa-brands fa-instagram"></i> إنستقرام</label><input id="f_instagram" /></div>
+        </div>
+        <div class="field"><label><i class="fa-brands fa-tiktok"></i> تيك توك</label><input id="f_tiktok" /></div>
+      </div>
+
+      <!-- أوقات العمل -->
+      <div class="card">
+        <h2><i class="fa-solid fa-clock"></i> أوقات العمل</h2>
+        <div id="hoursContainer"></div>
+        <button class="btn btn-o btn-sm" id="addHour"><i class="fa-solid fa-plus"></i> إضافة يوم</button>
+      </div>
+
+      <!-- الأطباق -->
+      <div class="card">
+        <h2><i class="fa-solid fa-utensils"></i> الأطباق</h2>
+        <div id="dishesContainer"></div>
+        <button class="btn btn-o btn-sm" id="addDish"><i class="fa-solid fa-plus"></i> إضافة طبق</button>
+      </div>
+
+      <!-- المعرض -->
+      <div class="card">
+        <h2><i class="fa-solid fa-images"></i> معرض الصور</h2>
+        <div id="galleryContainer"></div>
+        <button class="btn btn-o btn-sm" id="addGallery"><i class="fa-solid fa-plus"></i> إضافة صورة</button>
+      </div>
+
+      <!-- الآراء -->
+      <div class="card">
+        <h2><i class="fa-solid fa-comments"></i> آراء العملاء</h2>
+        <div id="reviewsContainer"></div>
+        <button class="btn btn-o btn-sm" id="addReview"><i class="fa-solid fa-plus"></i> إضافة رأي</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  /* =========================================================
+     منطق لوحة التحكم
+     ========================================================= */
+  const PASSWORD = "admin123";              // ← غيّر كلمة السر هنا
+  const VALID_TYPES = ["restaurant","cafe","bakery"];
+  let currentType = "restaurant";
+  let working = {};                          // البيانات الجاري تعديلها
+
+  /* ---------- الدخول ---------- */
+  const loginBtn = document.getElementById("loginBtn");
+  const pwInput  = document.getElementById("pwInput");
+
+  function tryLogin() {
+    if (pwInput.value === PASSWORD) {
+      sessionStorage.setItem("admin_ok", "1");
+      showDashboard();
+    } else {
+      document.getElementById("loginErr").textContent = "كلمة المرور غير صحيحة";
+    }
+  }
+  loginBtn.addEventListener("click", tryLogin);
+  pwInput.addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
+
+  // إبقاء الجلسة مفتوحة لو سبق الدخول
+  if (sessionStorage.getItem("admin_ok") === "1") showDashboard();
+
+  function showDashboard() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    initTabs();
+    loadType(currentType);
+  }
+
+  /* ---------- تبويبات النوع ---------- */
+  function initTabs() {
+    document.querySelectorAll(".type-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelector(".type-tab.active").classList.remove("active");
+        tab.classList.add("active");
+        currentType = tab.dataset.type;
+        loadType(currentType);
+      });
+    });
+  }
+
+  /* ---------- تحميل بيانات نوع معيّن ---------- */
+  async function loadType(type) {
+    // localStorage أولاً ثم data.json
+    const saved = localStorage.getItem("menuData_" + type);
+    if (saved) {
+      try { working = JSON.parse(saved); fillForm(); return; } catch(e){}
+    }
+    try {
+      const res = await fetch("data.json", { cache:"no-store" });
+      const all = await res.json();
+      working = all[type] || {};
+    } catch(e) {
+      working = {};
+      showToast("تعذّر جلب data.json — املأ الحقول يدوياً.", true);
+    }
+    fillForm();
+  }
+
+  /* ---------- ملء الحقول من البيانات ---------- */
+  function fillForm() {
+    const g = id => document.getElementById(id);
+    g("f_name").value         = working.name || "";
+    g("f_name_en").value      = working.name_en || "";
+    g("f_logoText").value     = working.logoText || "";
+    g("f_logoText_en").value  = working.logoText_en || "";
+    g("f_tagline").value      = working.tagline || "";
+    g("f_tagline_en").value   = working.tagline_en || "";
+    g("f_about").value        = working.about || "";
+    g("f_about_en").value     = working.about_en || "";
+    g("f_phone").value        = working.phone || "";
+    g("f_formspree").value    = working.formspree || "";
+    g("f_address").value      = working.address || "";
+    g("f_address_en").value   = working.address_en || "";
+    g("f_mapQuery").value     = working.mapQuery || "";
+
+    const c = working.colors || {};
+    g("f_primary").value = c.primary || "#B23A2E";
+    g("f_accent").value  = c.accent  || "#E2A53D";
+    g("f_bg").value      = c.bg      || "#FBF6EE";
+    g("f_text").value    = c.text    || "#2B2118";
+
+    const s = working.social || {};
+    g("f_facebook").value  = s.facebook || "";
+    g("f_instagram").value = s.instagram || "";
+    g("f_tiktok").value    = s.tiktok || "";
+
+    renderHours(working.hours || []);
+    renderDishes(working.dishes || []);
+    renderGallery(working.gallery || []);
+    renderReviews(working.reviews || []);
+  }
+
+  /* ---------- صفوف أوقات العمل ---------- */
+  function renderHours(hours) {
+    const c = document.getElementById("hoursContainer");
+    c.innerHTML = "";
+    hours.forEach(h => c.appendChild(hourRow(h)));
+  }
+  function hourRow(h = {}) {
+    const div = document.createElement("div");
+    div.className = "row-item hour-row";
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove" title="حذف"><i class="fa-solid fa-trash"></i></button>
+      <div class="grid-2">
+        <div class="field"><label>اليوم (عربي)</label><input class="h-day" value="${h.day || ""}" /></div>
+        <div class="field"><label>اليوم (English)</label><input class="h-day-en" value="${h.day_en || ""}" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>الوقت (عربي)</label><input class="h-time" value="${h.time || ""}" /></div>
+        <div class="field"><label>الوقت (English)</label><input class="h-time-en" value="${h.time_en || ""}" /></div>
+      </div>`;
+    div.querySelector(".remove").onclick = () => div.remove();
+    return div;
+  }
+  document.getElementById("addHour").onclick = () =>
+    document.getElementById("hoursContainer").appendChild(hourRow());
+
+  /* ---------- صفوف الأطباق ---------- */
+  function renderDishes(dishes) {
+    const c = document.getElementById("dishesContainer");
+    c.innerHTML = "";
+    dishes.forEach(d => c.appendChild(dishRow(d)));
+  }
+  function dishRow(d = {}) {
+    const div = document.createElement("div");
+    div.className = "row-item dish-row";
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove" title="حذف"><i class="fa-solid fa-trash"></i></button>
+      <div class="grid-2">
+        <div class="field"><label>اسم الطبق (عربي)</label><input class="d-name" value="${d.name || ""}" /></div>
+        <div class="field"><label>اسم الطبق (English)</label><input class="d-name-en" value="${d.name_en || ""}" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>الوصف (عربي)</label><input class="d-desc" value="${d.desc || ""}" /></div>
+        <div class="field"><label>الوصف (English)</label><input class="d-desc-en" value="${d.desc_en || ""}" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>السعر (ر.س)</label><input class="d-price" type="number" value="${d.price || 0}" /></div>
+        <div class="field"><label>رابط الصورة</label><input class="d-img" value="${d.img || ""}" placeholder="https://..." /></div>
+      </div>
+      <div class="grid-4">
+        <div class="field" style="grid-column:span 2;"><label>الموسم</label>
+          <select class="d-season">
+            <option value="all" ${d.season==="all"?"selected":""}>كل المواسم</option>
+            <option value="summer" ${d.season==="summer"?"selected":""}>صيفي</option>
+            <option value="winter" ${d.season==="winter"?"selected":""}>شتوي</option>
+          </select>
+        </div>
+        <div class="field"><label>وسم (عربي)</label><input class="d-tag" value="${d.tag || ""}" placeholder="الأكثر طلباً" /></div>
+        <div class="field"><label>وسم (English)</label><input class="d-tag-en" value="${d.tag_en || ""}" placeholder="Best Seller" /></div>
+      </div>`;
+    div.querySelector(".remove").onclick = () => div.remove();
+    return div;
+  }
+  document.getElementById("addDish").onclick = () =>
+    document.getElementById("dishesContainer").appendChild(dishRow());
+
+  /* ---------- صفوف المعرض ---------- */
+  function renderGallery(items) {
+    const c = document.getElementById("galleryContainer");
+    c.innerHTML = "";
+    items.forEach(g => c.appendChild(galleryRow(g)));
+  }
+  function galleryRow(g = {}) {
+    const div = document.createElement("div");
+    div.className = "row-item gallery-row";
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove" title="حذف"><i class="fa-solid fa-trash"></i></button>
+      <div class="field"><label>رابط الصورة</label><input class="g-img" value="${g.img || ""}" placeholder="https://..." /></div>
+      <div class="grid-2">
+        <div class="field"><label>التعليق (عربي)</label><input class="g-cap" value="${g.caption || ""}" /></div>
+        <div class="field"><label>التعليق (English)</label><input class="g-cap-en" value="${g.caption_en || ""}" /></div>
+      </div>`;
+    div.querySelector(".remove").onclick = () => div.remove();
+    return div;
+  }
+  document.getElementById("addGallery").onclick = () =>
+    document.getElementById("galleryContainer").appendChild(galleryRow());
+
+  /* ---------- صفوف الآراء ---------- */
+  function renderReviews(reviews) {
+    const c = document.getElementById("reviewsContainer");
+    c.innerHTML = "";
+    reviews.forEach(r => c.appendChild(reviewRow(r)));
+  }
+  function reviewRow(r = {}) {
+    const div = document.createElement("div");
+    div.className = "row-item review-row";
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove" title="حذف"><i class="fa-solid fa-trash"></i></button>
+      <div class="grid-2">
+        <div class="field"><label>الاسم</label><input class="r-name" value="${r.name || ""}" /></div>
+        <div class="field"><label>التقييم (1-5)</label><input class="r-stars" type="number" min="1" max="5" value="${r.stars || 5}" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>النص (عربي)</label><textarea class="r-text" rows="2">${r.text || ""}</textarea></div>
+        <div class="field"><label>النص (English)</label><textarea class="r-text-en" rows="2">${r.text_en || ""}</textarea></div>
+      </div>`;
+    div.querySelector(".remove").onclick = () => div.remove();
+    return div;
+  }
+  document.getElementById("addReview").onclick = () =>
+    document.getElementById("reviewsContainer").appendChild(reviewRow());
+
+  /* ---------- جمع البيانات من الحقول ---------- */
+  function collectForm() {
+    const g = id => document.getElementById(id).value.trim();
+
+    const hours = [...document.querySelectorAll(".hour-row")].map(row => ({
+      day:     row.querySelector(".h-day").value.trim(),
+      day_en:  row.querySelector(".h-day-en").value.trim(),
+      time:    row.querySelector(".h-time").value.trim(),
+      time_en: row.querySelector(".h-time-en").value.trim()
+    })).filter(h => h.day || h.time);
+
+    const dishes = [...document.querySelectorAll(".dish-row")].map(row => ({
+      name:    row.querySelector(".d-name").value.trim(),
+      name_en: row.querySelector(".d-name-en").value.trim(),
+      desc:    row.querySelector(".d-desc").value.trim(),
+      desc_en: row.querySelector(".d-desc-en").value.trim(),
+      price:   Number(row.querySelector(".d-price").value) || 0,
+      img:     row.querySelector(".d-img").value.trim(),
+      season:  row.querySelector(".d-season").value,
+      tag:     row.querySelector(".d-tag").value.trim(),
+      tag_en:  row.querySelector(".d-tag-en").value.trim()
+    })).filter(d => d.name);
+
+    const gallery = [...document.querySelectorAll(".gallery-row")].map(row => ({
+      img:        row.querySelector(".g-img").value.trim(),
+      caption:    row.querySelector(".g-cap").value.trim(),
+      caption_en: row.querySelector(".g-cap-en").value.trim()
+    })).filter(g => g.img);
+
+    const reviews = [...document.querySelectorAll(".review-row")].map(row => ({
+      name:    row.querySelector(".r-name").value.trim(),
+      stars:   Number(row.querySelector(".r-stars").value) || 5,
+      text:    row.querySelector(".r-text").value.trim(),
+      text_en: row.querySelector(".r-text-en").value.trim()
+    })).filter(r => r.name);
+
+    return {
+      ...working,
+      id: currentType,
+      name: g("f_name"), name_en: g("f_name_en"),
+      logoText: g("f_logoText"), logoText_en: g("f_logoText_en"),
+      tagline: g("f_tagline"), tagline_en: g("f_tagline_en"),
+      about: g("f_about"), about_en: g("f_about_en"),
+      phone: g("f_phone"), formspree: g("f_formspree"),
+      address: g("f_address"), address_en: g("f_address_en"), mapQuery: g("f_mapQuery"),
+      colors: { primary: g("f_primary"), accent: g("f_accent"), bg: g("f_bg"), text: g("f_text") },
+      social: { facebook: g("f_facebook"), instagram: g("f_instagram"), tiktok: g("f_tiktok") },
+      hours, dishes, gallery, reviews
+    };
+  }
+
+  /* ---------- الحفظ ---------- */
+  document.getElementById("saveBtn").onclick = () => {
+    const data = collectForm();
+    localStorage.setItem("menuData_" + currentType, JSON.stringify(data));
+    working = data;
+    showToast("✅ تم حفظ التعديلات بنجاح");
+  };
+
+  /* ---------- استعادة الافتراضي (لهذا النوع) ---------- */
+  document.getElementById("resetBtn").onclick = () => {
+    if (!confirm("سيتم حذف تعديلاتك لهذا النوع والرجوع للبيانات الأصلية. متأكد؟")) return;
+    localStorage.removeItem("menuData_" + currentType);
+    loadType(currentType);
+    showToast("↩️ تمت استعادة البيانات الافتراضية");
+  };
+
+  /* ---------- رسالة منبثقة ---------- */
+  function showToast(msg, isError) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.background = isError ? "#c62828" : "#2e7d32";
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2800);
+  }
+  </script>
+</body>
+</html>
