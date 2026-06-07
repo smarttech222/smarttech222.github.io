@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--
+  =========================================================
+  الصفحة الرئيسية (الهيكل) - صفحة هبوط ذكية ثنائية اللغة
+  - المحتوى يُملأ ديناميكياً عبر script.js
+  - النصوص الثابتة موسومة بـ data-i18n وتتبدّل عربي/إنجليزي
+  =========================================================
+-->
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>صفحة الهبوط الذكية</title>
+
+  <!-- خطوط عربية/لاتينية من Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- أيقونات Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ شريط التنقل ============ -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="logo">
+        <span class="logo-mark" id="logoMark">م</span>
+        <span class="logo-text" id="logoText">المطعم</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#menu" data-i18n="nav_menu">القائمة</a>
+        <a href="#today" data-i18n="nav_today">طبق اليوم</a>
+        <a href="#gallery" data-i18n="nav_gallery">المعرض</a>
+        <a href="#reviews" data-i18n="nav_reviews">الآراء</a>
+        <a href="#hours" data-i18n="nav_hours">أوقات العمل</a>
+        <a href="#contact" data-i18n="nav_contact">تواصل معنا</a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- زر تبديل اللغة -->
+        <button class="lang-btn" id="langBtn" aria-label="اللغة">
+          <i class="fa-solid fa-globe"></i> <span id="langLabel">EN</span>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="القائمة">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ القسم البطل ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-content reveal">
+      <p class="greeting" id="greeting">أهلاً بك</p>
+      <h1 class="hero-title" id="heroName">اسم المطعم</h1>
+      <p class="hero-tagline" id="heroTagline">الشعار التعريفي</p>
+      <p class="hero-about" id="heroAbout">نبذة عن المكان.</p>
+
+      <div class="hero-cta">
+        <a href="#menu" class="btn btn-primary"><i class="fa-solid fa-utensils"></i> <span data-i18n="hero_browse">تصفّح القائمة</span></a>
+        <a href="#" id="heroWhatsapp" class="btn btn-ghost"><i class="fa-brands fa-whatsapp"></i> <span data-i18n="hero_order">اطلب الآن</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ شريط الموسم ============ -->
+  <section class="season-strip reveal" id="seasonStrip">
+    <div class="container">
+      <i class="fa-solid fa-leaf"></i>
+      <span id="seasonText">اقتراحات الموسم</span>
+    </div>
+  </section>
+
+  <!-- ============ قائمة الأطباق ============ -->
+  <section class="section" id="menu">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="menu_eyebrow">قائمتنا</span>
+        <h2 data-i18n="menu_title">أطباقنا المميزة</h2>
+        <p class="muted" data-i18n="menu_sub">محضّرة بعناية يومياً — الأسعار شاملة الضريبة</p>
+      </div>
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ طبق اليوم ============ -->
+  <section class="section section-alt" id="today">
+    <div class="container today-wrap reveal">
+      <div class="today-text">
+        <span class="eyebrow" data-i18n="today_eyebrow">عرض خاص</span>
+        <h2 data-i18n="today_title">طبق اليوم</h2>
+        <h3 id="todayName">—</h3>
+        <p id="todayDesc" class="muted">—</p>
+        <div class="today-price"><span id="todayPrice">0</span> <span data-i18n="currency">ر.س</span></div>
+        <a href="#" id="todayOrder" class="btn btn-primary"><i class="fa-brands fa-whatsapp"></i> <span data-i18n="today_order">اطلب طبق اليوم</span></a>
+      </div>
+      <div class="today-img">
+        <img id="todayImg" src="" alt="طبق اليوم" loading="lazy" />
+        <span class="today-badge"><i class="fa-solid fa-star"></i> <span data-i18n="today_badge">مختار اليوم</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ معرض الصور ============ -->
+  <section class="section" id="gallery">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="gallery_eyebrow">لمحات من المكان</span>
+        <h2 data-i18n="gallery_title">معرض الصور</h2>
+      </div>
+      <!-- شبكة المعرض (تُبنى عبر JS) -->
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <!-- نافذة عرض الصورة المكبّرة (Lightbox) -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
+    <img id="lightboxImg" src="" alt="" />
+    <p id="lightboxCaption"></p>
+  </div>
+
+  <!-- ============ الآراء ============ -->
+  <section class="section section-alt" id="reviews">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="reviews_eyebrow">ماذا قالوا عنّا</span>
+        <h2 data-i18n="reviews_title">آراء عملائنا</h2>
+      </div>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ أوقات العمل + الخريطة ============ -->
+  <section class="section" id="hours">
+    <div class="container two-col">
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="hours_eyebrow">نسعد بزيارتكم</span>
+        <h2 data-i18n="hours_title">أوقات العمل</h2>
+        <ul class="hours-list" id="hoursList"></ul>
+
+        <h3 class="addr-title"><i class="fa-solid fa-location-dot"></i> <span data-i18n="address_title">العنوان</span></h3>
+        <p class="muted" id="addressText">—</p>
+      </div>
+
+      <div class="map-box reveal">
+        <iframe id="mapFrame" title="الموقع" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ نموذج التواصل ============ -->
+  <section class="section section-alt" id="contact">
+    <div class="container contact-wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="contact_eyebrow">راسلنا</span>
+        <h2 data-i18n="contact_title">اتصل بنا</h2>
+        <p class="muted" data-i18n="contact_sub">عندك استفسار أو حجز؟ اكتب لنا وبنرد عليك بأسرع وقت.</p>
+      </div>
+
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-row">
+          <input type="text" name="name" data-i18n-ph="ph_name" placeholder="الاسم" required />
+          <input type="email" name="email" data-i18n-ph="ph_email" placeholder="البريد الإلكتروني" required />
+        </div>
+        <input type="text" name="subject" data-i18n-ph="ph_subject" placeholder="الموضوع" />
+        <textarea name="message" rows="4" data-i18n-ph="ph_message" placeholder="رسالتك..." required></textarea>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="contact_send">إرسال</span></button>
+        <p class="form-status" id="formStatus"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ التذييل ============ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="logo footer-logo">
+          <span class="logo-mark" id="footerMark">م</span>
+          <span class="logo-text" id="footerText">المطعم</span>
+        </div>
+        <p class="muted" id="footerTagline">—</p>
+      </div>
+
+      <div class="social" id="socialLinks">
+        <a href="#" data-net="facebook" aria-label="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" data-net="instagram" aria-label="إنستقرام"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" data-net="tiktok" aria-label="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> — <span data-i18n="rights">جميع الحقوق محفوظة</span></span>
+      <a href="admin.html" class="admin-link"><i class="fa-solid fa-gear"></i> <span data-i18n="admin_panel">لوحة التحكم</span></a>
+    </div>
+  </footer>
+
+  <a href="#" id="floatWhatsapp" class="float-whatsapp" aria-label="اطلب عبر واتساب">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
