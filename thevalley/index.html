@@ -1,1 +1,961 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  THE VALLEY · موقع كافيه احترافي  (ملف واحد جاهز للرفع على أي استضافة)
+  ----------------------------------------------------------------------------
+  • كل شيء داخل هذا الملف: HTML + CSS + JavaScript
+  • متجاوب بالكامل: جوال + تابلت + كمبيوتر
+  • يدعم لغتين: الإنجليزية (LTR) والعربية (RTL) — زر التبديل في الأعلى
+  ----------------------------------------------------------------------------
+  كيف تعدّل:
+  • الألوان:   عدّل المتغيّرات داخل  :root  بقسم CSS
+  • النصوص:    عدّل كائن  I18N  بقسم JavaScript (لكل نص نسخة en و ar)
+  • المنتجات:  عدّل مصفوفة  PRODUCTS  بقسم JavaScript
+  ============================================================================
+-->
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#14100d" />
 
+  <title>The Valley · Specialty Coffee &amp; Roastery</title>
+  <meta name="description" content="The Valley — handcrafted specialty coffee roasted fresh every morning. Order online or visit our café." />
+
+  <!-- ===== خطوط Google =====
+       لاتيني: Fraunces (عناوين) · Pinyon Script (لمسات) · Outfit (نصوص)
+       عربي:   El Messiri (عناوين) · Tajawal (نصوص) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Outfit:wght@300;400;500;600;700&family=Pinyon+Script&family=El+Messiri:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ======================================================================
+       1) متغيّرات التصميم
+    ====================================================================== */
+    :root{
+      --bg:        #14100d;
+      --bg-2:      #1b1410;
+      --surface:   #241a14;
+      --surface-2: #2d211a;
+      --line:      rgba(199,154,99,.16);
+
+      --gold:   #c79a63;
+      --gold-2: #e3bd88;
+      --cream:  #f4ede2;
+      --text:   #cabcad;
+      --muted:  #93806f;
+
+      /* خطوط الوضع الإنجليزي (افتراضي) */
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-script:  'Pinyon Script', cursive;
+      --font-body:    'Outfit', system-ui, sans-serif;
+
+      --container: 1200px;
+      --radius: 18px;
+      --section-pad: clamp(64px, 9vw, 116px);
+      --ease: cubic-bezier(.22,.61,.36,1);
+    }
+
+    /* خطوط الوضع العربي (تُطبّق تلقائيًا عند dir=rtl) */
+    [dir="rtl"]{
+      --font-display: 'El Messiri', serif;
+      --font-body:    'Tajawal', system-ui, sans-serif;
+    }
+
+    /* ======================================================================
+       2) إعادة ضبط عامة
+    ====================================================================== */
+    *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+    html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; background:var(--bg); }
+    body{
+      font-family:var(--font-body);
+      color:var(--text);
+      /* ⭐ خلفية بلون صلب تمامًا — لا تدرّجات كبيرة ولا طبقات ثابتة،
+         لتفادي الخطوط الملوّنة على أجهزة Android/MIUI نهائيًا */
+      background:var(--bg);
+      line-height:1.65;
+      overflow-x:hidden;
+    }
+    img{ display:block; max-width:100%; }
+    a{ color:inherit; text-decoration:none; }
+    button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+    ul{ list-style:none; }
+
+    .container{ width:100%; max-width:var(--container); margin-inline:auto; padding-inline:24px; }
+
+    .eyebrow{
+      font-family:var(--font-script);
+      color:var(--gold-2);
+      font-size:clamp(1.5rem,3vw,2rem);
+      line-height:1;
+    }
+    /* في العربي نستبدل الخط الكتابي اللاتيني بخط عربي أنيق */
+    [dir="rtl"] .eyebrow{ font-family:'El Messiri', serif; font-weight:600; font-size:clamp(1.1rem,2.4vw,1.4rem); }
+
+    .display{
+      font-family:var(--font-display);
+      color:var(--cream);
+      font-weight:500;
+      line-height:1.05;
+      letter-spacing:-.01em;
+    }
+    [dir="rtl"] .display{ line-height:1.25; letter-spacing:0; font-weight:600; }
+    .display .accent{ color:var(--gold); }
+    .lead{ color:var(--muted); max-width:46ch; }
+
+    /* أزرار */
+    .btn{
+      display:inline-flex; align-items:center; gap:.6em;
+      padding:.92em 1.5em; border-radius:999px;
+      font-weight:500; font-size:.96rem; letter-spacing:.01em;
+      transition:transform .35s var(--ease), background .35s var(--ease);
+      white-space:nowrap;
+    }
+    .btn .ico{ display:inline-flex; transition:transform .35s var(--ease); }
+    .btn:hover .ico{ transform:translateX(4px); }
+    /* في RTL الأسهم تشير لليسار */
+    [dir="rtl"] .btn .ico svg, [dir="rtl"] .subscribe button svg{ transform:scaleX(-1); }
+    [dir="rtl"] .btn:hover .ico{ transform:translateX(-4px); }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));
+      color:#231811;
+    }
+    .btn-primary:hover{ transform:translateY(-3px); }
+    .btn-ghost{
+      border:1px solid var(--line); color:var(--cream); background:rgba(255,255,255,.02);
+    }
+    .btn-ghost:hover{ transform:translateY(-3px); border-color:rgba(199,154,99,.45); background:rgba(199,154,99,.08); }
+
+    a:focus-visible, button:focus-visible, input:focus-visible{
+      outline:2px solid var(--gold-2); outline-offset:3px; border-radius:6px;
+    }
+
+    /* ======================================================================
+       3) شريط الإعلان العلوي
+    ====================================================================== */
+    .topbar{
+      background:linear-gradient(90deg, rgba(199,154,99,.10), rgba(199,154,99,.02));
+      border-bottom:1px solid var(--line);
+      color:var(--gold-2);
+      font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+      text-align:center; padding:9px 16px;
+    }
+    [dir="rtl"] .topbar{ letter-spacing:0; }
+
+    /* ======================================================================
+       4) شريط التنقّل
+    ====================================================================== */
+    .nav{
+      position:sticky; top:0; z-index:50;
+      transition:background .4s var(--ease), border-color .4s var(--ease);
+      border-bottom:1px solid transparent;
+    }
+    .nav.scrolled{ /* خلفية صلبة بدل الضبابية لتفادي خلل العرض على Android */
+      background:rgba(20,16,13,.94);
+      border-bottom-color:var(--line);
+    }
+    .nav__inner{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:18px; }
+
+    .logo{ display:flex; align-items:center; gap:11px; }
+    .logo__mark{
+      width:40px; height:40px; border-radius:11px; flex:none;
+      display:grid; place-items:center;
+      background:linear-gradient(140deg,var(--surface-2),var(--surface));
+      border:1px solid var(--line); color:var(--gold-2);
+    }
+    .logo__text{ font-family:var(--font-display); color:var(--cream); font-size:1.32rem; font-weight:600; line-height:1; }
+    .logo__text small{ display:block; font-family:var(--font-body); font-size:.6rem; letter-spacing:.34em;
+      text-transform:uppercase; color:var(--gold); font-weight:500; margin-top:3px; }
+    [dir="rtl"] .logo__text small{ letter-spacing:.12em; }
+
+    .nav__links{ display:flex; align-items:center; gap:34px; }
+    .nav__links a{ font-size:.94rem; color:var(--text); position:relative; padding:4px 0; transition:color .3s; }
+    .nav__links a::after{ content:""; position:absolute; inset-inline-start:0; bottom:-2px; width:0; height:1.5px;
+      background:var(--gold); transition:width .35s var(--ease); }
+    .nav__links a:hover{ color:var(--cream); }
+    .nav__links a:hover::after{ width:100%; }
+
+    .nav__actions{ display:flex; align-items:center; gap:12px; }
+
+    /* زر تبديل اللغة */
+    .lang{ display:inline-flex; align-items:center; gap:7px; padding:.62em 1em; border-radius:999px;
+      border:1px solid var(--line); color:var(--cream); font-size:.85rem; font-weight:500;
+      font-family:'Outfit', system-ui, sans-serif; transition:.3s; }
+    .lang:hover{ border-color:rgba(199,154,99,.45); color:var(--gold-2); transform:translateY(-2px); }
+    .lang svg{ color:var(--gold-2); }
+
+    .cart{ position:relative; width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+      border:1px solid var(--line); color:var(--cream); transition:.3s; }
+    .cart:hover{ border-color:rgba(199,154,99,.45); color:var(--gold-2); }
+    .cart__count{ position:absolute; top:-7px; inset-inline-end:-7px; min-width:20px; height:20px; padding:0 5px;
+      border-radius:999px; background:var(--gold); color:#231811; font-size:.72rem; font-weight:700;
+      display:grid; place-items:center; transform:scale(0); transition:transform .3s var(--ease); font-family:'Outfit',sans-serif; }
+    .cart__count.show{ transform:scale(1); }
+
+    .nav__toggle{ display:none; width:44px; height:44px; border-radius:12px; border:1px solid var(--line);
+      flex-direction:column; gap:5px; align-items:center; justify-content:center; }
+    .nav__toggle span{ width:20px; height:2px; background:var(--cream); border-radius:2px; transition:.35s var(--ease); }
+    .nav__toggle.active span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+    .nav__toggle.active span:nth-child(2){ opacity:0; }
+    .nav__toggle.active span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+    /* ======================================================================
+       5) Hero
+    ====================================================================== */
+    .hero{ position:relative; padding-top:clamp(40px,6vw,70px); padding-bottom:var(--section-pad); }
+    .hero__grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(30px,5vw,64px); align-items:center; }
+    .hero h1{ font-size:clamp(2.7rem,6vw,4.6rem); margin:14px 0 20px; }
+    [dir="rtl"] .hero h1{ font-size:clamp(2.3rem,5.4vw,4rem); }
+    .hero .lead{ font-size:1.05rem; margin-bottom:30px; }
+    .hero__cta{ display:flex; flex-wrap:wrap; gap:14px; margin-bottom:38px; }
+
+    .badges{ display:flex; flex-wrap:wrap; gap:26px; }
+    .badge{ display:flex; align-items:center; gap:11px; }
+    .badge__ico{ width:42px; height:42px; border-radius:50%; flex:none; display:grid; place-items:center;
+      border:1px solid var(--line); color:var(--gold-2); background:rgba(199,154,99,.06); }
+    .badge b{ display:block; color:var(--cream); font-size:.9rem; font-weight:600; }
+    .badge span{ font-size:.78rem; color:var(--muted); }
+
+    .hero__media{ position:relative; }
+    .hero__media .ring{ display:none; } /* أُزيلت حلقة التوهّج لتقليل الطبقات المركّبة */
+    .hero__media img{ position:relative; z-index:1; width:100%; aspect-ratio:1/1; object-fit:cover;
+      border-radius:26px; border:1px solid var(--line); }
+    .hero__chip{ position:absolute; z-index:2; inset-inline-start:-6px; bottom:26px;
+      background:rgba(28,21,16,.94); border:1px solid var(--line);
+      border-radius:16px; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+    .hero__chip .stars{ color:var(--gold-2); font-size:.9rem; letter-spacing:2px; }
+    .hero__chip b{ color:var(--cream); font-size:1.05rem; }
+    .hero__chip span{ font-size:.74rem; color:var(--muted); }
+
+    /* (تمت إزالة تأثير البخار المتحرّك لتفادي خلل العرض على بعض أجهزة Android) */
+
+    /* ======================================================================
+       6) About
+    ====================================================================== */
+    .about{ padding-block:var(--section-pad); position:relative; }
+    .about__grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(34px,5vw,72px); align-items:center; }
+    .about__media{ position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line); }
+    .about__media img{ width:100%; height:100%; aspect-ratio:4/5; object-fit:cover; }
+    .about__media::after{ content:""; position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(20,16,13,.55), transparent 55%); }
+
+    .about h2{ font-size:clamp(2.1rem,4.4vw,3.3rem); margin:12px 0 18px; }
+    .about .lead{ font-size:1.02rem; margin-bottom:26px; }
+    .feature-list{ display:grid; gap:16px; margin-bottom:34px; }
+    .feature-list li{ display:flex; align-items:center; gap:14px; color:var(--cream); font-size:1rem; }
+    .feature-list .dot{ width:34px; height:34px; border-radius:50%; flex:none; display:grid; place-items:center;
+      background:rgba(199,154,99,.10); border:1px solid var(--line); color:var(--gold-2); font-size:.85rem; }
+
+    /* ======================================================================
+       7) Menu / Popular Picks
+    ====================================================================== */
+    .menu{ padding-block:var(--section-pad); }
+    .section-head{ text-align:center; margin-bottom:54px; }
+    .section-head h2{ font-size:clamp(2.1rem,4.4vw,3.2rem); margin-top:6px; }
+    .section-head .divider{ width:56px; height:1px; background:var(--gold); margin:18px auto 0; opacity:.6; }
+
+    .menu__grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+    .card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+      overflow:hidden; transition:transform .45s var(--ease), border-color .45s var(--ease);
+      display:flex; flex-direction:column; }
+    .card:hover{ transform:translateY(-8px); border-color:rgba(199,154,99,.4); }
+    .card__media{ position:relative; aspect-ratio:1/1; overflow:hidden; }
+    .card__media img{ width:100%; height:100%; object-fit:cover; transition:transform .7s var(--ease); }
+    .card:hover .card__media img{ transform:scale(1.07); }
+    .card__tag{ position:absolute; top:12px; inset-inline-start:12px; background:rgba(20,16,13,.85);
+      border:1px solid var(--line); color:var(--gold-2); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 10px; border-radius:999px; }
+    [dir="rtl"] .card__tag{ letter-spacing:0; }
+    .card__body{ padding:18px 18px 20px; display:flex; flex-direction:column; flex:1; }
+    .card__body h3{ font-family:var(--font-display); color:var(--cream); font-size:1.18rem; font-weight:600; }
+    .card__body p{ font-size:.85rem; color:var(--muted); margin:6px 0 16px; flex:1; }
+    .card__foot{ display:flex; align-items:center; justify-content:space-between; }
+    .price{ font-family:var(--font-display); color:var(--gold-2); font-size:1.25rem; font-weight:600; }
+    [dir="rtl"] .price{ font-family:'Outfit',sans-serif; } /* الأرقام أوضح بخط لاتيني */
+    .add{ width:42px; height:42px; border-radius:12px; display:grid; place-items:center;
+      background:linear-gradient(135deg,var(--gold-2),var(--gold)); color:#231811;
+      transition:transform .3s var(--ease); }
+    .add:hover{ transform:scale(1.08); }
+    .add:active{ transform:scale(.94); }
+
+    .menu__more{ text-align:center; margin-top:46px; }
+
+    /* ======================================================================
+       8) Perks
+    ====================================================================== */
+    .perks{ padding-bottom:var(--section-pad); }
+    .perks__grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+      border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+    .perk{ background:var(--bg-2); padding:26px 24px; display:flex; align-items:center; gap:16px; }
+    .perk__ico{ width:48px; height:48px; border-radius:50%; flex:none; display:grid; place-items:center;
+      background:rgba(199,154,99,.10); border:1px solid var(--line); color:var(--gold-2); }
+    .perk b{ display:block; color:var(--cream); font-size:.98rem; }
+    .perk span{ font-size:.8rem; color:var(--muted); }
+
+    /* ======================================================================
+       9) Visit Us
+    ====================================================================== */
+    .visit{ padding-block:var(--section-pad); }
+    .visit__panel{ position:relative; border-radius:26px; overflow:hidden; border:1px solid var(--line); isolation:isolate; }
+    .visit__panel img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
+    .visit__panel::after{ content:""; position:absolute; inset:0; z-index:-1;
+      background:linear-gradient(105deg, rgba(20,16,13,.94) 30%, rgba(20,16,13,.55) 100%); }
+    /* في RTL نعكس اتجاه التدرّج ليبقى النص على الجهة الداكنة */
+    [dir="rtl"] .visit__panel::after{ background:linear-gradient(255deg, rgba(20,16,13,.94) 30%, rgba(20,16,13,.55) 100%); }
+    .visit__content{ padding:clamp(40px,6vw,72px); max-width:560px; }
+    .visit h2{ font-size:clamp(2rem,4.2vw,3rem); margin:10px 0 18px; }
+    .visit p{ color:var(--muted); margin-bottom:28px; max-width:42ch; }
+    .hours{ display:grid; gap:10px; margin-bottom:32px; }
+    .hours li{ display:flex; justify-content:space-between; gap:20px; padding-bottom:10px;
+      border-bottom:1px solid var(--line); color:var(--text); font-size:.95rem; max-width:360px; }
+    .hours li b{ color:var(--cream); font-weight:500; }
+    [dir="rtl"] .hours li b{ font-family:'Outfit',sans-serif; }
+
+    /* ======================================================================
+       10) النشرة + الفوتر
+    ====================================================================== */
+    .footer{ border-top:1px solid var(--line); background:var(--bg-2); padding-top:var(--section-pad); }
+    .footer__top{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:40px; padding-bottom:54px; }
+    .footer h4{ color:var(--cream); font-family:var(--font-display); font-size:1.1rem; margin-bottom:20px; font-weight:600; }
+    .footer .brand .logo{ margin-bottom:16px; }
+    .footer p{ font-size:.9rem; color:var(--muted); max-width:34ch; margin-bottom:18px; }
+
+    .subscribe{ display:flex; gap:8px; background:var(--surface); border:1px solid var(--line);
+      border-radius:999px; padding:6px; padding-inline-start:18px; max-width:340px; }
+    .subscribe input{ flex:1; background:none; border:none; color:var(--cream); font-size:.9rem; outline:none; font-family:inherit; }
+    .subscribe input::placeholder{ color:var(--muted); }
+    .subscribe button{ width:42px; height:42px; flex:none; border-radius:50%;
+      background:linear-gradient(135deg,var(--gold-2),var(--gold)); color:#231811; display:grid; place-items:center;
+      transition:transform .3s var(--ease); }
+    .subscribe button:hover{ transform:translateX(2px); }
+
+    .footer__links li{ margin-bottom:11px; }
+    .footer__links a{ font-size:.9rem; color:var(--text); transition:color .3s, padding .3s; }
+    .footer__links a:hover{ color:var(--gold-2); padding-inline-start:4px; }
+
+    .contact-row{ display:flex; align-items:flex-start; gap:12px; margin-bottom:16px; font-size:.9rem; }
+    .contact-row .ci{ color:var(--gold-2); flex:none; margin-top:2px; }
+    .contact-row a:hover{ color:var(--gold-2); }
+
+    .socials{ display:flex; gap:10px; margin-top:6px; }
+    .socials a{ width:38px; height:38px; border-radius:10px; display:grid; place-items:center;
+      border:1px solid var(--line); color:var(--text); transition:.3s; }
+    .socials a:hover{ color:var(--gold-2); border-color:rgba(199,154,99,.45); transform:translateY(-3px); }
+
+    .footer__bottom{ border-top:1px solid var(--line); padding:24px 0; text-align:center;
+      font-size:.82rem; color:var(--muted); }
+    .footer__bottom a{ color:var(--gold-2); }
+
+    /* ======================================================================
+       11) Toast
+    ====================================================================== */
+    .toast{ position:fixed; bottom:26px; left:50%; transform:translate(-50%,140%);
+      background:rgba(28,21,16,.95); border:1px solid rgba(199,154,99,.4); color:var(--cream);
+      padding:13px 22px; border-radius:999px; font-size:.9rem; z-index:100; display:flex; align-items:center; gap:10px;
+      transition:transform .5s var(--ease); }
+    .toast.show{ transform:translate(-50%,0); }
+    .toast .ci{ color:var(--gold-2); }
+
+    /* ======================================================================
+       12) قائمة الجوال
+    ====================================================================== */
+    .mobile-menu{ position:fixed; inset:0; z-index:60; background:rgba(18,14,11,.99);
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      gap:8px; opacity:0; pointer-events:none; transition:opacity .4s var(--ease); }
+    .mobile-menu.open{ opacity:1; pointer-events:auto; }
+    .mobile-menu a{ font-family:var(--font-display); font-size:1.7rem; color:var(--cream); padding:12px; transition:color .3s; }
+    .mobile-menu a:hover{ color:var(--gold-2); }
+    .mobile-menu .btn{ margin-top:14px; }
+    /* زر إغلاق القائمة (X) أعلى اللوحة */
+    .mobile-menu__close{ position:absolute; top:20px; inset-inline-end:20px; width:46px; height:46px;
+      border-radius:12px; border:1px solid var(--line); color:var(--cream); display:grid; place-items:center;
+      transition:transform .35s var(--ease), border-color .3s, color .3s; }
+    .mobile-menu__close:hover{ border-color:rgba(199,154,99,.45); color:var(--gold-2); transform:rotate(90deg); }
+
+    /* ======================================================================
+       13) Scroll reveal
+    ====================================================================== */
+    .reveal{ opacity:0; transition:opacity .6s ease; }
+    .reveal.in{ opacity:1; }
+
+    /* ======================================================================
+       تحسين الأداء: رسم الأقسام عند الحاجة فقط (يخفّف عبء معالج الرسوميات
+       بشدة ويقلّل خلل العرض على الصفحات الطويلة، خاصة في وضع سطح المكتب)
+    ====================================================================== */
+    .about, .menu, .perks, .visit, .footer{
+      content-visibility:auto;
+      contain-intrinsic-size:auto 800px;
+    }
+
+    /* ======================================================================
+       14) التجاوب
+    ====================================================================== */
+    @media (max-width:1024px){
+      .menu__grid{ grid-template-columns:repeat(2,1fr); }
+      .perks__grid{ grid-template-columns:repeat(2,1fr); }
+      .footer__top{ grid-template-columns:1fr 1fr; gap:34px; }
+    }
+    @media (max-width:900px){
+      .nav__links{ display:none; }
+      .nav__toggle{ display:flex; }
+      .nav__actions .btn{ display:none; }      /* زر الطلب فقط يُخفى ويظهر داخل قائمة الجوال */
+      .nav__actions{ gap:8px; }
+      .lang{ padding:.5em .8em; font-size:.8rem; } /* زر اللغة يبقى ظاهرًا على الصفحة الرئيسية */
+
+      .hero__grid{ grid-template-columns:1fr; }
+      .hero__media{ order:-1; max-width:460px; margin-inline:auto; }
+      .about__grid{ grid-template-columns:1fr; }
+      .about__media{ max-width:480px; margin-inline:auto; }
+    }
+    @media (max-width:560px){
+      .container{ padding-inline:18px; }
+      .menu__grid{ grid-template-columns:1fr; gap:18px; }
+      .card__media{ aspect-ratio:16/11; }
+      .perks__grid{ grid-template-columns:1fr; }
+      .footer__top{ grid-template-columns:1fr; }
+      .badges{ gap:18px; }
+      .hero__chip{ inset-inline-start:0; }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+      .reveal{ opacity:1; transform:none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- شريط الإعلان -->
+  <div class="topbar" data-i18n="topbar">✦ Free delivery on orders over $25 · Freshly roasted every morning ✦</div>
+
+  <!-- التنقّل -->
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+
+      <a href="#home" class="logo" aria-label="The Valley home">
+        <span class="logo__mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h11v4a5 5 0 0 1-5 5H8a3 3 0 0 1-3-3V9Z"/><path d="M16 9h2.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c-.5 1 .5 1.5 0 2.5M11 3c-.5 1 .5 1.5 0 2.5"/></svg>
+        </span>
+        <span class="logo__text">The Valley<small data-i18n="brandSub">Coffee Roastery</small></span>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#home"    data-i18n="navHome">Home</a>
+        <a href="#about"   data-i18n="navAbout">About</a>
+        <a href="#menu"    data-i18n="navMenu">Menu</a>
+        <a href="#visit"   data-i18n="navVisit">Visit</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+      </nav>
+
+      <div class="nav__actions">
+        <!-- زر تبديل اللغة -->
+        <button class="lang" data-lang-toggle aria-label="Switch language">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>
+          <span class="lang-label">العربية</span>
+        </button>
+
+        <button class="cart" id="cart" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h8.6a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/></svg>
+          <span class="cart__count" id="cartCount">0</span>
+        </button>
+
+        <a href="#menu" class="btn btn-primary" data-i18n="orderNow">Order Now</a>
+
+        <button class="nav__toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- قائمة الجوال -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu__close" id="menuClose" aria-label="Close menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <a href="#home"    data-i18n="navHome">Home</a>
+    <a href="#about"   data-i18n="navAbout">About</a>
+    <a href="#menu"    data-i18n="navMenu">Menu</a>
+    <a href="#visit"   data-i18n="navVisit">Visit</a>
+    <a href="#contact" data-i18n="navContact">Contact</a>
+    <a href="#menu" class="btn btn-primary" data-i18n="orderNow">Order Now</a>
+  </div>
+
+  <main>
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container hero__grid">
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="heroEyebrow">Luxury atmosphere · Refined experience ✨</span>
+        <h1 class="display" data-i18n="heroTitle">Experience Coffee<br>Like <span class="accent">Never Before</span></h1>
+        <p class="lead" data-i18n="heroLead">Handcrafted specialty coffee made from the finest single-origin beans, roasted fresh and brewed to perfection — only at The Valley.</p>
+
+        <div class="hero__cta">
+          <a href="#menu" class="btn btn-primary"><span data-i18n="exploreMenu">Explore Menu</span>
+            <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a href="#about" class="btn btn-ghost">
+            <span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none"/></svg></span>
+            <span data-i18n="ourStory">Our Story</span>
+          </a>
+        </div>
+
+        <div class="badges">
+          <div class="badge">
+            <span class="badge__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.5 7.1 18.2l.9-5.5-4-3.9 5.5-.8z"/></svg></span>
+            <div><b data-i18n="badge1a">Premium</b><span data-i18n="badge1b">Quality Beans</span></div>
+          </div>
+          <div class="badge">
+            <span class="badge__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/><path d="M12 7v5l3 2"/></svg></span>
+            <div><b data-i18n="badge2a">Expertly</b><span data-i18n="badge2b">Roasted</span></div>
+          </div>
+          <div class="badge">
+            <span class="badge__ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9C1 9 3 5.5 6.5 5.5c2 0 3.5 1.3 5.5 3 2-1.7 3.5-3 5.5-3C21 5.5 23 9 21.5 12 19 16.5 12 21 12 21z"/></svg></span>
+            <div><b data-i18n="badge3a">Made With</b><span data-i18n="badge3b">Love</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__media reveal">
+        <div class="ring"></div>
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80" alt="A cup of latte art coffee" loading="eager" />
+        <div class="hero__chip">
+          <div><div class="stars">★★★★★</div><b>4.9 / 5.0</b></div>
+          <span data-i18n="heroChip">Loved by<br>2,400+ guests</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container about__grid">
+      <div class="about__media reveal">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80" alt="Cozy interior of The Valley coffee shop" loading="lazy" />
+      </div>
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="aboutEyebrow">About Us</span>
+        <h2 class="display" data-i18n="aboutTitle">More Than Just<br>a <span class="accent">Coffee</span></h2>
+        <p class="lead" data-i18n="aboutLead">At The Valley, we believe coffee is more than a drink — it's an experience. Every cup we serve is a blend of passion, quality, and craftsmanship you can taste.</p>
+
+        <ul class="feature-list">
+          <li><span class="dot">✓</span> <span data-i18n="feat1">Sustainably sourced single-origin beans</span></li>
+          <li><span class="dot">✓</span> <span data-i18n="feat2">Ethically traded &amp; farmer-direct</span></li>
+          <li><span class="dot">✓</span> <span data-i18n="feat3">Roasted fresh in small batches daily</span></li>
+          <li><span class="dot">✓</span> <span data-i18n="feat4">Crafted by award-winning baristas</span></li>
+        </ul>
+
+        <a href="#menu" class="btn btn-primary"><span data-i18n="learnMore">Learn More</span>
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu" id="menu">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="menuEyebrow">Our Signature</span>
+        <h2 class="display" data-i18n="menuTitle">Popular Picks</h2>
+        <div class="divider"></div>
+      </div>
+
+      <!-- تُولّد البطاقات تلقائيًا من PRODUCTS -->
+      <div class="menu__grid" id="menuGrid"></div>
+
+      <div class="menu__more reveal">
+        <a href="#menu" class="btn btn-ghost"><span data-i18n="viewFullMenu">View Full Menu</span>
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERKS -->
+  <section class="perks">
+    <div class="container">
+      <div class="perks__grid reveal">
+        <div class="perk">
+          <span class="perk__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v8H3z"/><path d="M14 9h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></span>
+          <div><b data-i18n="perk1a">Free Delivery</b><span data-i18n="perk1b">On orders above $25</span></div>
+        </div>
+        <div class="perk">
+          <span class="perk__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><b data-i18n="perk2a">Fresh &amp; Fast</b><span data-i18n="perk2b">Prepared with care</span></div>
+        </div>
+        <div class="perk">
+          <span class="perk__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg></span>
+          <div><b data-i18n="perk3a">Secure Payment</b><span data-i18n="perk3b">100% safe &amp; secure</span></div>
+        </div>
+        <div class="perk">
+          <span class="perk__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.5 7.1 18.2l.9-5.5-4-3.9 5.5-.8z"/></svg></span>
+          <div><b data-i18n="perk4a">Loyalty Rewards</b><span data-i18n="perk4b">Earn points every order</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="visit" id="visit">
+    <div class="container">
+      <div class="visit__panel reveal">
+        <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1500&q=80" alt="The Valley café atmosphere" loading="lazy" />
+        <div class="visit__content">
+          <span class="eyebrow" data-i18n="visitEyebrow">Come Say Hello</span>
+          <h2 class="display" data-i18n="visitTitle">Visit Our <span class="accent">Café</span></h2>
+          <p data-i18n="visitText">On Alwadi Street in Omdurman, The Valley is your cozy escape — warm light, soft music, and the aroma of freshly ground beans. Come for the coffee, stay for the calm.</p>
+
+          <ul class="hours">
+            <li><span data-i18n="hours1">Monday – Thursday</span><b>7:00 AM – 9:00 PM</b></li>
+            <li><span data-i18n="hours2">Friday – Saturday</span><b>7:00 AM – 11:00 PM</b></li>
+            <li><span data-i18n="hours3">Sunday</span><b>8:00 AM – 8:00 PM</b></li>
+          </ul>
+
+          <a href="https://www.google.com/maps/search/?api=1&query=The+Valley+Omdurman+Alwadi+Street" target="_blank" rel="noopener" class="btn btn-primary"><span data-i18n="getDirections">Get Directions</span>
+            <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer__top">
+        <div class="brand">
+          <a href="#home" class="logo">
+            <span class="logo__mark" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h11v4a5 5 0 0 1-5 5H8a3 3 0 0 1-3-3V9Z"/><path d="M16 9h2.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c-.5 1 .5 1.5 0 2.5M11 3c-.5 1 .5 1.5 0 2.5"/></svg>
+            </span>
+            <span class="logo__text">The Valley<small data-i18n="brandSub">Coffee Roastery</small></span>
+          </a>
+          <p data-i18n="footBrand">Stay in the loop — subscribe for special offers, brewing tips, and updates from The Valley.</p>
+          <form class="subscribe" id="subscribeForm">
+            <input type="email" id="subEmail" placeholder="Enter your email" data-i18n-ph="subPlaceholder" aria-label="Email address" required />
+            <button type="submit" aria-label="Subscribe">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+        </div>
+
+        <div>
+          <h4 data-i18n="footQuick">Quick Links</h4>
+          <ul class="footer__links">
+            <li><a href="#home"    data-i18n="navHome">Home</a></li>
+            <li><a href="#menu"    data-i18n="navMenu">Menu</a></li>
+            <li><a href="#about"   data-i18n="footAbout">About Us</a></li>
+            <li><a href="#visit"   data-i18n="navVisit">Visit</a></li>
+            <li><a href="#contact" data-i18n="navContact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 data-i18n="footCare">Customer Care</h4>
+          <ul class="footer__links">
+            <li><a href="#" data-i18n="care1">FAQs</a></li>
+            <li><a href="#" data-i18n="care2">Shipping &amp; Delivery</a></li>
+            <li><a href="#" data-i18n="care3">Returns &amp; Refunds</a></li>
+            <li><a href="#" data-i18n="care4">Terms &amp; Conditions</a></li>
+            <li><a href="#" data-i18n="care5">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 data-i18n="footContact">Contact Us</h4>
+          <!-- أرقام الهاتف (قابلة للضغط للاتصال) -->
+          <div class="contact-row">
+            <span class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span>
+            <span dir="ltr"><a href="tel:+249912367416">0912367416</a><br><a href="tel:+249912245932">0912245932</a></span>
+          </div>
+          <!-- حساب تيك توك -->
+          <div class="contact-row">
+            <span class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.2a5.2 5.2 0 1 1-5.2-5.2c.3 0 .5 0 .8.1v2.3a2.9 2.9 0 1 0 2 2.8V3h2.6z"/></svg></span>
+            <a href="https://www.tiktok.com/@the.valley.sudan" target="_blank" rel="noopener" dir="ltr">@the.valley.sudan</a>
+          </div>
+          <!-- العنوان -->
+          <div class="contact-row">
+            <span class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+            <span data-i18n="footAddress">Omdurman – Alwadi Street, Sudan</span>
+          </div>
+          <!-- روابط التواصل: تيك توك + واتساب حقيقيان · انستقرام/فيسبوك ضع روابطك -->
+          <div class="socials">
+            <a href="https://www.tiktok.com/@the.valley.sudan" target="_blank" rel="noopener" aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.2a5.2 5.2 0 1 1-5.2-5.2c.3 0 .5 0 .8.1v2.3a2.9 2.9 0 1 0 2 2.8V3h2.6z"/></svg></a>
+            <a href="https://wa.me/249912367416" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.7.7-.9 1.6-.6 2.6.4 1.5 1.4 2.8 2.9 3.8 1.9 1.2 3.2 1.2 4 .9.5-.2 1.2-.7 1.4-1.3.1-.4.1-.7 0-.8z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3a4 4 0 0 0-4 4v2H8v3h2v6h3v-6h2.5l.5-3H13v-1.5A1 1 0 0 1 14 9z"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom" data-i18n="footBottom">© 2026 The Valley Coffee Roastery. Crafted with ☕ &amp; care.</div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"><span class="ci">✓</span><span id="toastText">Added to cart</span></div>
+
+  <!-- ======================================================================
+       JavaScript
+  ====================================================================== -->
+  <script>
+  /* ----------------------------------------------------------------------
+     (أ) قاموس الترجمة — لكل نص نسخة en (إنجليزي) و ar (عربي)
+     لتعديل أي نص: غيّره هنا
+  ---------------------------------------------------------------------- */
+  const I18N = {
+    en:{
+      topbar:"✦ Free delivery on orders over $25 · Freshly roasted every morning ✦",
+      brandSub:"Coffee Roastery",
+      navHome:"Home", navAbout:"About", navMenu:"Menu", navVisit:"Visit", navContact:"Contact",
+      orderNow:"Order Now",
+      heroEyebrow:"Luxury atmosphere · Refined experience ✨",
+      heroTitle:"Experience Coffee<br>Like <span class='accent'>Never Before</span>",
+      heroLead:"Handcrafted specialty coffee made from the finest single-origin beans, roasted fresh and brewed to perfection — only at The Valley.",
+      exploreMenu:"Explore Menu", ourStory:"Our Story",
+      badge1a:"Premium", badge1b:"Quality Beans",
+      badge2a:"Expertly", badge2b:"Roasted",
+      badge3a:"Made With", badge3b:"Love",
+      heroChip:"Loved by<br>2,400+ guests",
+      aboutEyebrow:"About Us",
+      aboutTitle:"More Than Just<br>a <span class='accent'>Coffee</span>",
+      aboutLead:"At The Valley, we believe coffee is more than a drink — it's an experience. Every cup we serve is a blend of passion, quality, and craftsmanship you can taste.",
+      feat1:"Sustainably sourced single-origin beans",
+      feat2:"Ethically traded &amp; farmer-direct",
+      feat3:"Roasted fresh in small batches daily",
+      feat4:"Crafted by award-winning baristas",
+      learnMore:"Learn More",
+      menuEyebrow:"Our Signature", menuTitle:"Popular Picks", viewFullMenu:"View Full Menu",
+      perk1a:"Free Delivery", perk1b:"On orders above $25",
+      perk2a:"Fresh &amp; Fast", perk2b:"Prepared with care",
+      perk3a:"Secure Payment", perk3b:"100% safe &amp; secure",
+      perk4a:"Loyalty Rewards", perk4b:"Earn points every order",
+      visitEyebrow:"Come Say Hello",
+      visitTitle:"Visit Our <span class='accent'>Café</span>",
+      visitText:"On Alwadi Street in Omdurman, The Valley is your cozy escape — warm light, soft music, and the aroma of freshly ground beans. Come for the coffee, stay for the calm.",
+      hours1:"Monday – Thursday", hours2:"Friday – Saturday", hours3:"Sunday",
+      getDirections:"Get Directions",
+      footBrand:"Stay in the loop — subscribe for special offers, brewing tips, and updates from The Valley.",
+      subPlaceholder:"Enter your email",
+      footQuick:"Quick Links", footAbout:"About Us",
+      footCare:"Customer Care",
+      care1:"FAQs", care2:"Shipping &amp; Delivery", care3:"Returns &amp; Refunds", care4:"Terms &amp; Conditions", care5:"Privacy Policy",
+      footContact:"Contact Us",
+      footAddress:"Omdurman – Alwadi Street, Sudan",
+      footBottom:"© 2026 The Valley Coffee Roastery. Crafted with ☕ &amp; care.",
+      toastCart:(n)=>`${n} added to cart`,
+      toastSub:"Thanks for subscribing! 🎉",
+      langLabel:"العربية"
+    },
+    ar:{
+      topbar:"✦ توصيل مجاني للطلبات فوق $25 · قهوة محمّصة طازجة كل صباح ✦",
+      brandSub:"محمصة قهوة",
+      navHome:"الرئيسية", navAbout:"من نحن", navMenu:"القائمة", navVisit:"زورونا", navContact:"تواصل معنا",
+      orderNow:"اطلب الآن",
+      heroEyebrow:"أجواء فاخرة · تجربة راقية ✨",
+      heroTitle:"اكتشف القهوة<br>كما <span class='accent'>لم تذقها من قبل</span>",
+      heroLead:"قهوة مختصّة محضّرة يدويًا من أجود حبوب القهوة أحادية المصدر، محمّصة طازجة ومحضّرة بإتقان — فقط في The Valley.",
+      exploreMenu:"تصفّح القائمة", ourStory:"قصتنا",
+      badge1a:"فاخرة", badge1b:"حبوب عالية الجودة",
+      badge2a:"باحترافية", badge2b:"محمّصة",
+      badge3a:"صُنعت بـ", badge3b:"حُب",
+      heroChip:"أحبّها أكثر من<br>٢٤٠٠ زائر",
+      aboutEyebrow:"من نحن",
+      aboutTitle:"أكثر من مجرّد<br><span class='accent'>قهوة</span>",
+      aboutLead:"في The Valley نؤمن أن القهوة أكثر من مجرّد مشروب — إنها تجربة. كل كوب نقدّمه مزيج من الشغف والجودة والإتقان تتذوّقه في كل رشفة.",
+      feat1:"حبوب أحادية المصدر من مصادر مستدامة",
+      feat2:"تجارة عادلة ومباشرة من المزارعين",
+      feat3:"محمّصة طازجة بكميات صغيرة يوميًا",
+      feat4:"من إعداد خبراء قهوة حائزين على جوائز",
+      learnMore:"اعرف المزيد",
+      menuEyebrow:"اختيارنا المميّز", menuTitle:"الأكثر طلبًا", viewFullMenu:"عرض القائمة كاملة",
+      perk1a:"توصيل مجاني", perk1b:"للطلبات فوق $25",
+      perk2a:"طازج وسريع", perk2b:"محضّر بعناية",
+      perk3a:"دفع آمن", perk3b:"آمن 100٪",
+      perk4a:"مكافآت الولاء", perk4b:"اكسب نقاطًا مع كل طلب",
+      visitEyebrow:"تعال وقل مرحبًا",
+      visitTitle:"زُر <span class='accent'>مقهانا</span>",
+      visitText:"في شارع الوادي بأم درمان، The Valley هو ملاذك الدافئ — إضاءة هادئة وموسيقى ناعمة ورائحة حبوب القهوة الطازجة. تعال للقهوة وابقَ للهدوء.",
+      hours1:"الإثنين – الخميس", hours2:"الجمعة – السبت", hours3:"الأحد",
+      getDirections:"احصل على الاتجاهات",
+      footBrand:"ابقَ على اطّلاع — اشترك للحصول على عروض خاصة ونصائح التحضير وأخبار The Valley.",
+      subPlaceholder:"أدخل بريدك الإلكتروني",
+      footQuick:"روابط سريعة", footAbout:"من نحن",
+      footCare:"خدمة العملاء",
+      care1:"الأسئلة الشائعة", care2:"الشحن والتوصيل", care3:"الإرجاع والاسترداد", care4:"الشروط والأحكام", care5:"سياسة الخصوصية",
+      footContact:"تواصل معنا",
+      footAddress:"أم درمان – شارع الوادي، السودان",
+      footBottom:"© 2026 The Valley محمصة قهوة. صُنع بـ ☕ وعناية.",
+      toastCart:(n)=>`تمت إضافة ${n} إلى السلة`,
+      toastSub:"شكرًا لاشتراكك! 🎉",
+      langLabel:"English"
+    }
+  };
+
+  /* ----------------------------------------------------------------------
+     (ب) المنتجات — لكل منتج اسم/وصف/وسم بلغتين + سعر + صورة
+  ---------------------------------------------------------------------- */
+  const PRODUCTS = [
+    { price:"$5.20", img:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Iced Caramel Latte", ar:"لاتيه كراميل مثلّج"},
+      desc:{en:"Smooth espresso with caramel and chilled milk.", ar:"إسبريسو ناعم مع الكراميل والحليب البارد."},
+      tag:{en:"Bestseller", ar:"الأكثر مبيعًا"} },
+
+    { price:"$4.40", img:"https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Cappuccino", ar:"كابتشينو"},
+      desc:{en:"Classic cappuccino with rich foam and bold flavor.", ar:"كابتشينو كلاسيكي برغوة غنية ونكهة قوية."},
+      tag:{en:"Classic", ar:"كلاسيكي"} },
+
+    { price:"$4.90", img:"https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Mocha", ar:"موكا"},
+      desc:{en:"Espresso with chocolate and steamed milk.", ar:"إسبريسو مع الشوكولاتة والحليب المبخّر."},
+      tag:{en:"Sweet", ar:"حلو"} },
+
+    { price:"$3.60", img:"https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Espresso", ar:"إسبريسو"},
+      desc:{en:"Strong, bold and pure — a true espresso shot.", ar:"قوي وجريء ونقي — جرعة إسبريسو حقيقية."},
+      tag:{en:"Pure", ar:"نقي"} },
+
+    { price:"$4.60", img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Flat White", ar:"فلات وايت"},
+      desc:{en:"Velvety microfoam over a double ristretto.", ar:"رغوة حريرية ناعمة فوق جرعة ريستريتو مزدوجة."},
+      tag:{en:"Smooth", ar:"ناعم"} },
+
+    { price:"$5.00", img:"https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Cold Brew", ar:"كولد برو"},
+      desc:{en:"Slow-steeped 18 hours for a clean, sweet finish.", ar:"منقوع ببطء 18 ساعة لمذاق نقي وحلو."},
+      tag:{en:"Refreshing", ar:"منعش"} },
+
+    { price:"$5.10", img:"https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Vanilla Macchiato", ar:"فانيلا ماكياتو"},
+      desc:{en:"Layered espresso with vanilla and silky milk.", ar:"إسبريسو متعدد الطبقات مع الفانيلا والحليب الحريري."},
+      tag:{en:"Favorite", ar:"المفضّل"} },
+
+    { price:"$5.80", img:"https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=600&q=80",
+      name:{en:"Affogato", ar:"أفوغاتو"},
+      desc:{en:"Vanilla gelato drowned in hot espresso.", ar:"جيلاتو فانيلا غارق في إسبريسو ساخن."},
+      tag:{en:"Dessert", ar:"حلوى"} }
+  ];
+
+  /* ----------------------------------------------------------------------
+     (ج) عناصر + حالة
+  ---------------------------------------------------------------------- */
+  const grid = document.getElementById('menuGrid');
+  const cartCountEl = document.getElementById('cartCount');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  let currentLang = 'en';
+  let cartCount = 0;
+  let toastTimer;
+
+  /* (د) رسم بطاقات المنتجات حسب اللغة الحالية */
+  function renderProducts(){
+    grid.innerHTML = PRODUCTS.map(p => `
+      <article class="card reveal">
+        <div class="card__media">
+          <span class="card__tag">${p.tag[currentLang]}</span>
+          <img src="${p.img}" alt="${p.name[currentLang]}" loading="lazy" />
+        </div>
+        <div class="card__body">
+          <h3>${p.name[currentLang]}</h3>
+          <p>${p.desc[currentLang]}</p>
+          <div class="card__foot">
+            <span class="price">${p.price}</span>
+            <button class="add" data-name="${p.name[currentLang]}" aria-label="Add ${p.name[currentLang]}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+      </article>`).join('');
+    observeReveals();
+  }
+
+  /* (هـ) تطبيق اللغة على كامل الصفحة */
+  function setLang(lang){
+    currentLang = lang;
+    const html = document.documentElement;
+    html.lang = lang;
+    html.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+    // النصوص العادية
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const v = I18N[lang][el.dataset.i18n];
+      if(v !== undefined) el.innerHTML = v;
+    });
+    // النصوص النائبة (placeholder)
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+      const v = I18N[lang][el.dataset.i18nPh];
+      if(v !== undefined) el.placeholder = v;
+    });
+    // نص زر التبديل = اللغة الأخرى
+    document.querySelectorAll('.lang-label').forEach(el=> el.textContent = I18N[lang].langLabel);
+
+    renderProducts();
+    try{ localStorage.setItem('tv_lang', lang); }catch(e){}
+  }
+
+  /* (و) إشعار */
+  function showToast(msg){
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+  }
+
+  /* (ز) السلة */
+  grid.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.add');
+    if(!btn) return;
+    cartCount++;
+    cartCountEl.textContent = cartCount;
+    cartCountEl.classList.add('show');
+    showToast(I18N[currentLang].toastCart(btn.dataset.name));
+  });
+
+  /* (ح) أزرار تبديل اللغة */
+  document.querySelectorAll('[data-lang-toggle]').forEach(btn=>{
+    btn.addEventListener('click', ()=> setLang(currentLang === 'en' ? 'ar' : 'en'));
+  });
+
+  /* (ط) شريط التنقّل عند التمرير */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', ()=> nav.classList.toggle('scrolled', window.scrollY > 30));
+
+  /* (ي) قائمة الجوال */
+  const toggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  function setMenu(open){
+    toggle.classList.toggle('active', open);
+    mobileMenu.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  toggle.addEventListener('click', ()=> setMenu(!mobileMenu.classList.contains('open')));
+  document.getElementById('menuClose').addEventListener('click', ()=> setMenu(false));
+  mobileMenu.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
+
+  /* (ك) نموذج الاشتراك */
+  document.getElementById('subscribeForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    document.getElementById('subEmail').value = '';
+    showToast(I18N[currentLang].toastSub);
+  });
+
+  /* (ل) حركات الظهور */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+    });
+  }, { threshold: 0.12 });
+  function observeReveals(){ document.querySelectorAll('.reveal:not(.in)').forEach(el=> io.observe(el)); }
+
+  /* (م) التشغيل الأولي — يقرأ اللغة المحفوظة إن وُجدت */
+  try{ const saved = localStorage.getItem('tv_lang'); if(saved) currentLang = saved; }catch(e){}
+  setLang(currentLang);
+  </script>
+</body>
+</html>
